@@ -30,6 +30,10 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
+// Resetar dia
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
     private var quantidade_a_ser_adicionada: Int = 180
@@ -112,6 +116,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        verificarDia()
+    }
+
     public fun adicionarAgua(view: View){
 
         // Atualiza quantos mls bebeu
@@ -151,7 +160,7 @@ class MainActivity : AppCompatActivity() {
         player.start()
     }
 
-    public fun reiniciarDia(view: View){
+    public fun reiniciarDia(){
         val txt_mls_bebidos = findViewById<TextView>(R.id.txt_mls_bebidos)
         val frasesDeIncentivo = listOf(
             "Comece com pouco. \n A constância é o segredo!",
@@ -250,7 +259,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun verificarDia(){
-        
+        val prefs = getSharedPreferences("drinkit", MODE_PRIVATE)
+        val hoje = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val ultimoDia = prefs.getString("ultimo_dia", null)
+
+        if(ultimoDia != hoje){
+            prefs.edit()
+                .putInt("mls", 0)
+                .putString("ultimo_dia", hoje)
+                .apply()
+
+            reiniciarDia()
+        }
     }
 
     public fun abrirInstagram(view: View) {
