@@ -162,7 +162,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btn_usuario"
+        android:id="@+id/btn_menu"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginBottom="20dp"
@@ -170,7 +170,7 @@
         android:insetTop="0dp"
         android:insetBottom="0dp"
         app:cornerRadius="30dp"
-        app:icon="@android:drawable/ic_menu_edit"
+        app:icon="?android:attr/listChoiceIndicatorSingle"
         app:iconGravity="textTop"
         app:iconPadding="0dp"
         app:iconTint="#000000"

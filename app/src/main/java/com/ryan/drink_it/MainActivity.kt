@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 
 import android.graphics.Color
 import android.view.SoundEffectConstants
+import android.media.MediaPlayer
 // notificação
 import android.Manifest
 import android.app.NotificationChannel
@@ -24,6 +25,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import android.util.Log
+// Notificação ao longo do dia
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
     private var quantidade_a_ser_adicionada: Int = 180
@@ -69,6 +75,14 @@ class MainActivity : AppCompatActivity() {
         criarCanalNotificacao()
         solicitarPermissaoNotificacao()
 
+        val pedido = PeriodicWorkRequestBuilder<LembreteWorker>(90, TimeUnit.MINUTES).build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "lembrete_agua",
+            ExistingPeriodicWorkPolicy.KEEP,
+            pedido
+        )
+
         val btn_notificacao = findViewById<Button>(R.id.btn_notificacao)
         btn_notificacao.setOnClickListener {
             dispararNotificacao()
@@ -77,10 +91,10 @@ class MainActivity : AppCompatActivity() {
         // Animação inicial
         playAnimacaoInicial()
 
-        // Usuário
-        val btn_usuario = findViewById<Button>(R.id.btn_usuario)
-        btn_usuario.setOnClickListener {
-            startActivity(Intent(this, usuarioActivity::class.java))
+        // Menu
+        val btn_menu = findViewById<Button>(R.id.btn_menu)
+        btn_menu.setOnClickListener {
+            startActivity(Intent(this, MenuActivity::class.java))
         }
 
         val frasesSaudacao= listOf(
@@ -130,6 +144,11 @@ class MainActivity : AppCompatActivity() {
         txt_mensagem.text = frasesDeIncentivo.random()
         val animacaoImediata = android.view.animation.AnimationUtils.loadAnimation(this, R.anim.fade_in)
         txt_mensagem.startAnimation(animacaoImediata)
+
+        // Som
+        val player = MediaPlayer.create(this, R.raw.win)
+        player.setOnCompletionListener { it.release() }
+        player.start()
     }
 
     public fun reiniciarDia(view: View){
@@ -228,6 +247,10 @@ class MainActivity : AppCompatActivity() {
         val horaAtual = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
         Log.d("Notif", "Hora que o app enxerga: $horaAtual")
         return horaAtual >= 22 || horaAtual < 8
+    }
+
+    private fun verificarDia(){
+        
     }
 
     public fun abrirInstagram(view: View) {
