@@ -173,6 +173,7 @@
         app:icon="@android:drawable/ic_menu_edit"
         app:iconGravity="textTop"
         app:iconPadding="0dp"
+        app:iconTint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.955"
