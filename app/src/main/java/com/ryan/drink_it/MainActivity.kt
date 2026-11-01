@@ -37,6 +37,7 @@ import java.util.Date
 
 class MainActivity : AppCompatActivity() {
     private var quantidade_a_ser_adicionada: Int = 180
+    private var mls_bebidos_hoje : Int = 0
     private var nome_usuario: String = "pessoa"
 
     // Notificação
@@ -59,14 +60,21 @@ class MainActivity : AppCompatActivity() {
         val dadosSalvos = getSharedPreferences("drink-it_data", MODE_PRIVATE)
 
         // 3. Lê os valores salvos. Se não encontrar nada (ex: primeira vez abrindo o app), assume 0
-        val mlsSalvos = dadosSalvos.getInt("mls", 0)
+        mls_bebidos_hoje = dadosSalvos.getInt("mls", 0)
+        val meta_diaria : Int = (dadosSalvos.getInt("meta_diaria", 2500))
         this.nome_usuario = dadosSalvos.getString("nome_usuario", "pessoa") ?: "pessoa"
 
         // 4. Joga os valores de volta na tela para o usuário ver
-        if(mlsSalvos == 0){
-            txt_mls_bebidos.text = ""
+        if(mls_bebidos_hoje == 0){
+            txt_mls_bebidos.text = "0 / $meta_diaria ml"
         } else{
-            txt_mls_bebidos.text = "$mlsSalvos ml"
+
+            txt_mls_bebidos.text = "$mls_bebidos_hoje / $meta_diaria ml"
+            if (mls_bebidos_hoje >= meta_diaria){
+                txt_mls_bebidos.setTextColor(Color.parseColor("#4CAF50"))
+            } else{
+                txt_mls_bebidos.setTextColor(Color.WHITE)
+            }
         }
 
 
@@ -133,18 +141,30 @@ class MainActivity : AppCompatActivity() {
         // Atualiza quantos mls bebeu
         val txt_mls_bebidos = findViewById<TextView>(R.id.txt_mls_bebidos)
         var texto: String = txt_mls_bebidos.text.toString()
-        var mls: Int = texto.filter { it.isDigit() }.toIntOrNull() ?: 0
-        mls += quantidade_a_ser_adicionada
-        txt_mls_bebidos.text = "$mls ml"
+        mls_bebidos_hoje += quantidade_a_ser_adicionada
+
+        // Pega a meta diária
+        val dadosSalvos = getSharedPreferences("drink-it_data", MODE_PRIVATE)
+        val meta_diaria : Int = (dadosSalvos.getInt("meta_diaria", 2500))
+
+
+        txt_mls_bebidos.text = "$mls_bebidos_hoje / $meta_diaria ml"
         txt_mls_bebidos.textSize = 34f
+
+        if (mls_bebidos_hoje >= meta_diaria){
+            txt_mls_bebidos.setTextColor(Color.parseColor("#4CAF50"))
+        } else{
+            txt_mls_bebidos.setTextColor(Color.WHITE)
+        }
+
+
 
         view.playSoundEffect(SoundEffectConstants.CLICK)
 
 
         // 3. SALVA OS DADOS (Nova parte!)
-        val dadosSalvos = getSharedPreferences("drink-it_data", MODE_PRIVATE)
         val editor = dadosSalvos.edit()
-        editor.putInt("mls", mls)         // Salva a quantidade de mls
+        editor.putInt("mls", mls_bebidos_hoje)         // Salva a quantidade de mls
         editor.apply()                          // Confirma a gravação dos dados
 
         val frasesDeIncentivo = listOf(
@@ -178,10 +198,12 @@ class MainActivity : AppCompatActivity() {
         )
         txt_mls_bebidos.text = frasesDeIncentivo.random()
         txt_mls_bebidos.textSize = 20f
+        txt_mls_bebidos.setTextColor(Color.WHITE)
 
         val txt_mensagem = findViewById<TextView>(R.id.txt_mensagem)
         txt_mensagem.text = ""
 
+        mls_bebidos_hoje = 0
         // 3. SALVA OS DADOS (Nova parte!)
         val dadosSalvos = getSharedPreferences("drink-it_data", MODE_PRIVATE)
         val editor = dadosSalvos.edit()
@@ -217,9 +239,9 @@ class MainActivity : AppCompatActivity() {
         val quantidade_2 = dadosSalvos.getString("quantidade_2", "250")
         val quantidade_3 = dadosSalvos.getString("quantidade_3", "500")
 
-        botao_180mls.setText("$quantidade_1 mls")
-        botao_250mls.setText("$quantidade_2 mls")
-        botao_500mls.setText("$quantidade_3 mls")
+        botao_180mls.setText("$quantidade_1 ml")
+        botao_250mls.setText("$quantidade_2 ml")
+        botao_500mls.setText("$quantidade_3 ml")
 
 
     }

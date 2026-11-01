@@ -34,7 +34,7 @@ class UsuarioActivity : AppCompatActivity() {
         edtNome.setText(nome_usuario)
         val btnConfirmar = findViewById<Button>(R.id.button_confirmar)
         val button_voltar = findViewById<Button>(R.id.button_voltar)
-
+        // Quantidades
         val edit_quantidade_1 = findViewById<EditText>(R.id.edit_quantidade_1)
         val edit_quantidade_2 = findViewById<EditText>(R.id.edit_quantidade_2)
         val edit_quantidade_3 = findViewById<EditText>(R.id.edit_quantidade_3)
@@ -42,16 +42,21 @@ class UsuarioActivity : AppCompatActivity() {
         edit_quantidade_1.setText(dadosSalvos.getString("quantidade_1", "180"))
         edit_quantidade_2.setText(dadosSalvos.getString("quantidade_2", "250"))
         edit_quantidade_3.setText(dadosSalvos.getString("quantidade_3", "500"))
-
+        // Meta Diária
+        val edit_meta_diaria = findViewById<EditText>(R.id.edit_meta_diaria)
+        edit_meta_diaria.setText(dadosSalvos.getInt("meta_diaria", 2500).toString())
 
         btnConfirmar.setOnClickListener {
             val nome = edtNome.text.toString()
             Toast.makeText(this, "É um belo nome, $nome!", Toast.LENGTH_SHORT).show()
             this.nome = nome
-
+            // Quantidades
             val quantidade_1 = findViewById<EditText>(R.id.edit_quantidade_1)
             val quantidade_2 = findViewById<EditText>(R.id.edit_quantidade_2)
             val quantidade_3 = findViewById<EditText>(R.id.edit_quantidade_3)
+
+            // Meta Diária
+            val edit_meta_diaria = findViewById<EditText>(R.id.edit_meta_diaria)
 
             val dadosSalvos = getSharedPreferences("drink-it_data", MODE_PRIVATE)
             val editor = dadosSalvos.edit()
@@ -59,6 +64,7 @@ class UsuarioActivity : AppCompatActivity() {
             editor.putString("quantidade_1", quantidade_1.text.replace(Regex("[^0-9]"), "").ifEmpty { "180" })
             editor.putString("quantidade_2", quantidade_2.text.replace(Regex("[^0-9]"), "").ifEmpty { "250" })
             editor.putString("quantidade_3", quantidade_3.text.replace(Regex("[^0-9]"), "").ifEmpty { "500" })
+            editor.putInt("meta_diaria", edit_meta_diaria.text.replace(Regex("[^0-9]"), "").ifEmpty { "2500" }.toInt())
             editor.apply()
 
             startActivity(Intent(this, MainActivity::class.java))
