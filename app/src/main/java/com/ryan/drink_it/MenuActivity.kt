@@ -23,7 +23,7 @@ class MenuActivity : AppCompatActivity() {
         // Botões
         val button_usuario = findViewById<Button>(R.id.button_usuario)
         button_usuario.setOnClickListener {
-            startActivity(Intent(this, usuarioActivity::class.java))
+            startActivity(Intent(this, UsuarioActivity::class.java))
         }
 
         val button_creditos = findViewById<Button>(R.id.button_creditos)

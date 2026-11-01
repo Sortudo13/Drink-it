@@ -69,6 +69,8 @@ class MainActivity : AppCompatActivity() {
             txt_mls_bebidos.text = "$mlsSalvos ml"
         }
 
+
+        // Quantidades
         val botao_180mls = findViewById<Button>(R.id.button_180ml)
         selecionarQuantidade(botao_180mls)
 
@@ -113,6 +115,11 @@ class MainActivity : AppCompatActivity() {
         )
         val text_ola = findViewById<TextView>(R.id.text_ola)
         text_ola.text = frasesSaudacao.random()
+
+        val botao_resetar = findViewById<Button>(R.id.botao_resetar)
+        botao_resetar.setOnClickListener {
+            reiniciarDia()
+        }
 
     }
 
@@ -201,6 +208,19 @@ class MainActivity : AppCompatActivity() {
 
         botaoClicado.setBackgroundColor(Color.parseColor("#2C9EF6"))
         botaoClicado.setTextColor(Color.WHITE)
+
+        // 2. Abre o arquivo de dados salvos
+        val dadosSalvos = getSharedPreferences("drink-it_data", MODE_PRIVATE)
+
+        // 3. Lê os valores salvos. Se não encontrar nada (ex: primeira vez abrindo o app), assume 0
+        val quantidade_1 = dadosSalvos.getString("quantidade_1", "180")
+        val quantidade_2 = dadosSalvos.getString("quantidade_2", "250")
+        val quantidade_3 = dadosSalvos.getString("quantidade_3", "500")
+
+        botao_180mls.setText("$quantidade_1 mls")
+        botao_250mls.setText("$quantidade_2 mls")
+        botao_500mls.setText("$quantidade_3 mls")
+
 
     }
 
